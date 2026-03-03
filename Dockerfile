@@ -1,29 +1,48 @@
-# Base image with CUDA support
-FROM nvidia/cuda:12.1.1-cudnn8-runtime-ubuntu22.04
+# 1. Use NVIDIA CUDA base with Ubuntu 22.04
+FROM nvidia/cuda:12.1.1-devel-ubuntu22.04
 
-# Install system deps
+# 2. Set environment variables to non-interactive (prevents build hangs)
+ENV DEBIAN_FRONTEND=noninteractive
+ENV PYTHONUNBUFFERED=1
+
+# 1. Install build dependencies
 RUN apt-get update && apt-get install -y \
-    python3 python3-pip python3-venv git curl \
+    wget build-essential libssl-dev zlib1g-dev \
+    libncurses5-dev libgdbm-dev libnss3-dev \
+    libsqlite3-dev libreadline-dev libffi-dev \
+    curl libbz2-dev git \
     && rm -rf /var/lib/apt/lists/*
 
-# Upgrade pip
-RUN python3 -m pip install --upgrade pip
+# 2. Download, Compile, and Install Python 3.12.10
+RUN wget https://www.python.org/ftp/python/3.12.10/Python-3.12.10.tgz \
+    && tar -xf Python-3.12.10.tgz \
+    && cd Python-3.12.10 \
+    && ./configure --enable-optimizations --with-ensurepip=install \
+    && make -j$(nproc) \
+    && make altinstall \
+    && ln -s /usr/local/bin/python3.12 /usr/bin/python3 \
+    && ln -s /usr/local/bin/python3.12 /usr/bin/python \
+    && cd .. && rm -rf Python-3.12.10*
 
-WORKDIR /app
+# 4. Set Python 3.12 as the default
+RUN update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.12 1 \
+    && update-alternatives --set python3 /usr/bin/python3.12
 
-# Copy poetry config first (cache optimization)
-COPY pyproject.toml poetry.lock* ./
-
-# Install Poetry
+# 5. Install Poetry
 RUN curl -sSL https://install.python-poetry.org | python3 -
 ENV PATH="/root/.local/bin:$PATH"
 
-# Install dependencies without virtualenv
+WORKDIR /app
+
+# 6. Copy ONLY dependency files for better caching
+COPY pyproject.toml poetry.lock* ./
+
+# 7. Install dependencies (Disabling venv since Docker is already isolated)
 RUN poetry config virtualenvs.create false \
     && poetry install --no-interaction --no-ansi --no-root
 
-# Copy project files
+# 8. Copy the rest of the project
 COPY . .
 
-# Default command (change to train script for GPU training)
+# 9. Default command to start training
 CMD ["python3", "scripts/train.py"]
