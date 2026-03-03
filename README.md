@@ -81,3 +81,4 @@ poetry.lock
         a_) pull repo in ssh from github
         b) ls -l Dockerfile
         c) bui;ld docker image -> docker build -t llm-trainer . 
+        d) docker run --gpus all -it llm-trainer

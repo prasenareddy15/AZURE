@@ -11,6 +11,7 @@ RUN apt-get update && apt-get install -y \
     libncurses5-dev libgdbm-dev libnss3-dev \
     libsqlite3-dev libreadline-dev libffi-dev \
     curl libbz2-dev git \
+    liblzma-dev \
     && rm -rf /var/lib/apt/lists/*
 
 # 4. Download, Compile, and Install Python 3.12.10
