@@ -1,0 +1,53 @@
+[project]
+name = "azure"
+version = "0.0.1"
+package-mode = false
+description = "finetunes an slm in azure and creates aknowledge rag and goves out an api which does semantic search on lnowledge graph rag created and stored in neo4j graph dtaabase, using strategical fetching avoids hallucainations and api is auth protected"
+authors = [
+    {name = "prasenareddy15",email = "prasenarm@gmail.com"}
+]
+readme = "README.md"
+requires-python = "=3.12.10"
+dependencies = [
+    "fastapi (>=0.129.0,<0.130.0)",
+    "uvicorn (>=0.41.0,<0.42.0)",
+    "pydantic (>=2.12.5,<3.0.0)",
+    "transformers (>=5.2.0,<6.0.0)",
+    "datasets (>=4.5.0,<5.0.0)",
+    "peft (>=0.18.1,<0.19.0)",
+    "trl (>=0.28.0,<0.29.0)",
+    "bitsandbytes (>=0.49.2,<0.50.0)",
+    "neo4j (>=6.1.0,<7.0.0)",
+    "langchain (>=1.2.10,<2.0.0)",
+    "langgraph (>=1.0.8,<2.0.0)",
+    "sentence-transformers (>=5.2.3,<6.0.0)",
+    "azure-ai-ml (>=1.31.0,<2.0.0)",
+    "azure-identity (>=1.25.2,<2.0.0)",
+    "python-dotenv (>=1.2.1,<2.0.0)",
+    "torch (>=2.10.0,<3.0.0)",
+    "accelerate (>=1.12.0,<2.0.0)",
+    "langchain-core (>=1.2.15,<2.0.0)"
+]
+
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.black]
+line-length = 100
+target-version = ["py310"]
+
+[tool.ruff]
+line-length = 100
+select = ["E", "F", "I"]
+ignore = []
+fix = true
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+
