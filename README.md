@@ -77,3 +77,7 @@ poetry.lock
         c) docker info | grep -i runtime
             nvidia-smi
         d) docker run --rm --gpus all nvidia/cuda:12.1.1-runtime-ubuntu22.04 nvidia-smi
+11) DOcker 
+        a_) pull repo in ssh from github
+        b) ls -l Dockerfile
+        c) bui;ld docker image -> docker build -t llm-trainer . 
